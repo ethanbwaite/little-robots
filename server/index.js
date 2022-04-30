@@ -21,37 +21,41 @@ app.get('/', (req, res) => {
 
 app.use(express.static('src/bundle'));
 
-var userIds = [];
-var controllers = {};
-var users = {};
+var controllers = {}; // Dict of active controllers
+var users = {}; // Dict of active users (controllable players)
+var userIdToPlayerSocket = {};
+var userIdToControllerSocket = {};
 
 io.on('connection', (socket) => {
 
   console.log('User connected, checking device...');
 
-  socket.emit('device_check_handshake_start');
+  socket.emit('device_check_handshake_start', socket.id);
 
   socket.on('device_check_handshake_end', (data) => {
     if (data.device === 'mobile') {
+      // MOBILE
       // Perform mobile controls setup
       console.log('Mobile device connected');
       socket.emit('show_mobile_controls');
     } else {
+      // DESKTOP
       // Perform desktop player setup
       // Generate a random 4-digit userId
       var userId = Math.floor(Math.random() * 10000);
-      while (userIds.indexOf(userId) > -1) {
+      while (userIdToPlayerSocket[userId]) {
         userId = Math.floor(Math.random() * 10000);
       }
-      userIds.push(userId);
 
       // Instantiate a user at a random position
       var player = new Player(
         userId, 
+        socket.id,
         Math.random() * 1000, 
         Math.random() * 1000
       );
       users[socket.id] = player;
+      userIdToPlayerSocket[userId] = socket.id;
 
       socket.emit('show_canvas', users);
 
@@ -65,6 +69,7 @@ io.on('connection', (socket) => {
     }
   });
 
+  // Local arrowkey controls (not intended for use)
   socket.on('player_key_down', (key) => {
     var user = users[socket.id];
     user.keyDown(key);
@@ -75,31 +80,69 @@ io.on('connection', (socket) => {
     user.keyUp(key);
   }); 
 
-  socket.on('code_submit', (code) => {
-    console.log('Code  ' + code + '  submitted by client ' + socket.id);
-    // Check if the code is a valid code
-    for (var i = 0; i < userIds.length; i++) {
-      var userId = userIds[i];
-      if (code === userId) {
-        // Code is valid, check if code is being controlled by another client
-        for (var i = 0; i < Object(controllers).values.length; i++) {
-          var controller = Object(controllers).values[i];
-          if (controller.code === code) {
-            console.log('Code already in use');
-            socket.emit('code_in_use');
-            return;
-          }
-        }
-        // Code is valid and not being used, add the controller
-        var controller = new Controller(code, socket.id);
-        controllers[socket.id] = controller;
-        console.log('Controller added');
-        socket.emit('code_accepted');
-        return;
+  // Mobile controls
+  socket.on('controller_key_down', (key) => {
+    var controller = controllers[socket.id];
+    if (controller) {
+      var userId = controller.playerId;
+      var playerSocket = userIdToPlayerSocket[userId];
+      var user = users[playerSocket];
+      if (user) {
+        user.keyDown(key);
+      } else {
+        console.log('User not found');
+        socket.emit('controller_lost_connection');
       }
     }
-    // Code is invalid
-    socket.emit('code_invalid');
+  });
+
+  socket.on('controller_key_up', (key) => {
+    var controller = controllers[socket.id];
+    if (controller) {
+      var userId = controller.playerId;
+      var playerSocket = userIdToPlayerSocket[userId];
+      var user = users[playerSocket];
+      if (user) {
+        user.keyUp(key);
+      } else {
+        console.log('User not found');
+        socket.emit('controller_lost_connection');
+      }
+    }
+  });
+
+  socket.on('code_submit', ([code, previousCode]) => {
+    console.log('Code  ' + code + '  submitted by client ' + socket.id);
+    // Check if the code is a valid code
+    if (userIdToPlayerSocket[code]) {
+      // Code is valid, check if code is being controlled by another client
+      if (userIdToControllerSocket[code] === socket.id) {
+        // Code is already being controlled by this client
+        console.log('Code is already being controlled by this client');
+        socket.emit('code_already_connected');
+      } else if (userIdToControllerSocket[code]) {
+        // Code is being controlled by another client
+        // Send a message to the client that the code is already being controlled
+        socket.emit('code_occupied');
+        console.log('Code ' + code + ' is already being controlled by another client');
+      } else {
+        // Code is valid and not being used, add the controller
+        var controller = new Controller(
+          code, 
+          socket.id, 
+          userIdToPlayerSocket[code]
+        );
+        controllers[socket.id] = controller;
+        delete userIdToControllerSocket[previousCode]
+        userIdToControllerSocket[code] = socket.id;
+        console.log('Controller added for code ' + code);
+        socket.emit('code_accepted');
+      }
+    } else {
+      // Code is invalid
+      console.log('Code ' + code + ' is invalid');
+      socket.emit('code_invalid');
+    }
   });
 
   socket.on('disconnect', () => {
@@ -107,22 +150,31 @@ io.on('connection', (socket) => {
     if (users[socket.id]) {
       var user = users[socket.id];
       delete users[socket.id];
-      
+      delete userIdToPlayerSocket[user.id];    
+      delete userIdToControllerSocket[user.id];
+
       socket.broadcast.emit('user_list', users);
       console.log('Desktop disconnected: ' + user.id);
     } else {
-      console.log('Mobile device disconnected');
+      // Remove the controller from the controller list
+      if (controllers[socket.id]) {
+        var controller = controllers[socket.id];
+        delete controllers[socket.id];
+        delete userIdToControllerSocket[controller.playerId];
+       
+        console.log('Controller disconnected for code ' + controller.playerId);
+      }
     }
   });
 });
 
 setInterval(() => {
   Object.values(users).forEach((user) => {
-    user.update();
+    user.update(userIdToControllerSocket);
   });
   io.emit('user_list', users)
 }, Constants.SERVER.INTERVAL_RATE);
 
-server.listen(3000, () => {
-  console.log('listening on *:3000');
+server.listen(80, () => {
+  console.log('listening on *:80');
 });

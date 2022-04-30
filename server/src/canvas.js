@@ -1,4 +1,4 @@
-module.exports = function drawCanvas(userMap) {
+module.exports = function drawCanvas(userMap, socketId) {
   var canvas = document.getElementById('canvas');
 
   if (canvas.getContext) {
@@ -15,7 +15,16 @@ module.exports = function drawCanvas(userMap) {
       ctx.fill();
       ctx.font = '10px Arial';
       ctx.fillStyle = 'black';
-      ctx.fillText(user.id, user.x, user.y + 25);
+      if (user.connected) {
+        ctx.fillText('Connected', user.x, user.y + 35);
+      } else {
+        ctx.fillText('Not connected', user.x, user.y + 35);
+      }
+      if (user.socket === socketId) {
+        ctx.fillText(user.id, user.x, user.y + 25);
+        ctx.fillStyle = 'red';
+        ctx.fillText('You', user.x, user.y + 45);
+      }
     }
 
   } else {
