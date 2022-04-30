@@ -13,10 +13,13 @@ module.exports = function drawCanvas(userMap) {
       ctx.arc(user.x, user.y, 10, 0, 2 * Math.PI);
       ctx.fillStyle = user.color;
       ctx.fill();
+      ctx.font = '10px Arial';
+      ctx.fillStyle = 'black';
+      ctx.fillText(user.id, user.x, user.y + 25);
     }
 
-    console.log('canvas is supported');
   } else {
+    console.log('Canvas not supported :(');
     // canvas-unsupported code here
   }
 }

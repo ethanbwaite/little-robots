@@ -19,10 +19,13 @@ module.exports = function drawCanvas(userMap) {
       ctx.arc(user.x, user.y, 10, 0, 2 * Math.PI);
       ctx.fillStyle = user.color;
       ctx.fill();
+      ctx.font = '10px Arial';
+      ctx.fillStyle = 'black';
+      ctx.fillText(user.id, user.x, user.y + 25);
     }
 
-    console.log('canvas is supported');
   } else {
+    console.log('Canvas not supported :(');
     // canvas-unsupported code here
   }
 }
@@ -30,49 +33,41 @@ module.exports = function drawCanvas(userMap) {
 var drawCanvas = require('./canvas.js');
 
 module.exports = function socket() {
-    var socket = io();
-    
-    var messages = document.getElementById('messages');
-    var form = document.getElementById('form');
-    var input = document.getElementById('input');
+  var socket = io();
+
+  socket.on('device_check_handshake_start', function() {
+    // Check if the device is mobile or desktop
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    socket.emit('device_check_handshake_end', {
+        device: isMobile ? 'mobile' : 'desktop'
+    });
+  });
+
+  socket.on('show_mobile_controls', function() {
+    // Hide the canvas and show the mobile controls
+    console.log('Displaying mobile controls');
+    document.getElementById('canvas').style.display = 'none';
+    document.getElementById('controller').style.display = 'flex';
+  });
+      
+  socket.on('show_canvas', function() {
+    // Hide the mobile controls and show the canvas
+    console.log('Displaying canvas');
+    document.getElementById('canvas').style.display = 'flex';
+    document.getElementById('controller').style.display = 'none';
 
     document.addEventListener('keydown', function(e) {
-        socket.emit('key_down', e.key);
+      socket.emit('player_key_down', e.key);
     });
 
     document.addEventListener('keyup', function(e) {
-        socket.emit('key_up', e.key);
+      socket.emit('player_key_up', e.key);
     });
+  });
 
-    socket.on('user_list', function(userList) {
-        console.log('user_list');
-        drawCanvas(userList);
-    });
+  socket.on('user_list', function(userList) {
+    drawCanvas(userList);
+  });
 
-
-        
-
-
-    // form.addEventListener('submit', function(e) {
-    //     e.preventDefault();
-    //     if (input.value) {
-    //     socket.emit('chat message', input.value);
-    //     input.value = '';
-    //     }
-    // });
-
-    // socket.on('chat message', function(msg) {
-    //     var li = document.createElement('li');
-    //     li.textContent = msg;
-    //     messages.appendChild(li);
-    //     window.scrollTo(0, document.body.scrollHeight);
-    // });
-
-    // socket.on('user disconnected', function(msg) {
-    //     var li = document.createElement('li');
-    //     li.textContent = 'User has disconnected';
-    //     messages.appendChild(li);
-    //     window.scrollTo(0, document.body.scrollHeight);
-    // });
 }
 },{"./canvas.js":2}]},{},[1]);

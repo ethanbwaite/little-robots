@@ -1,0 +1,105 @@
+#everythingWrapper {
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+
+#controller {
+  height: 100%;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+
+#controls {
+  display: flex;
+  width: 100vw;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#horizontalControls {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.controlButton {
+  margin-left: 3rem;
+  margin-right: 3rem;
+  width: 6rem;
+  height: 6rem;
+  padding: 15px 25px;
+  font-size: 1rem;
+  user-select: none;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: #4c4eaf;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 9px #999;
+}
+
+.controlButton:hover {background-color: #5759ca}
+
+.controlButton:active {
+  background-color: #323374;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+#connectionForm {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+input[type=text], select {
+  width: 50%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #777;
+  border-radius: 7px;
+  box-sizing: border-box;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+#submit {
+  /* margin-left: 2rem;
+  margin-right: 2rem; */
+  padding: 15px 25px;
+  font-size: 1rem;
+  user-select: none;
+  cursor: pointer;
+  font-size: 2rem;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: #777;
+  border: none;
+  border-radius: 90px;
+  margin-left: 1rem;
+  font-weight: bold;
+}
+
+#submit:active {
+  background-color: #333;
+}
+
+canvas {
+  display: none;
+  border: 1px solid #000;
+}

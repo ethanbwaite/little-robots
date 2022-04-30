@@ -1,11 +1,30 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" 
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="style.css">
     <title>Little Robots</title>
   </head>
   <script src="/socket.io/socket.io.js"></script>
   <body>
-    <canvas id="canvas" width="1000" height="1000"></canvas>
-    <script src="bundle.js"></script>
+    <div id="everythingWrapper">
+      <canvas id="canvas" width="1000" height="1000"></canvas>
+      <div id="controller">
+        <form id="connectionForm">
+          <input type="text" id="code" placeholder="Code" maxlength="4">
+          <input type="submit" id="submit" value="Go">
+        </form>
+        <div id="controls">
+          <button id="upButton" class="controlButton" class="up">🡹</button>
+          <div id="horizontalControls">
+            <button id="leftButton" class="controlButton" class="left">🡸</button>
+            <button id="rightButton" class="controlButton" class="right">🡺</button>
+          </div> 
+          <button id="downButton" class="controlButton" class="down">🡻</button>
+        </div>
+      </div>
+      <script src="bundle.js"></script>
+    </div>
   </body>
 </html>
