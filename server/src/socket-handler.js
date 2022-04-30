@@ -84,6 +84,7 @@ module.exports = function socket() {
     console.log('Code accepted');
     document.getElementById('connectionMessage').innerHTML = 'Connected!';
     document.getElementById('connectionMessage').style.color = 'green';
+    Navigator.vibrate(100);
   });
 
   socket.on('controller_lost_connection', function() {
