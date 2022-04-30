@@ -1,6 +1,5 @@
 export const Constants = {
   SERVER: {
-    IP: '13.57.24.48',
     INTERVAL_RATE: 1000 / 60,
   },
   PLAYER: {
