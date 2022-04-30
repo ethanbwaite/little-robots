@@ -175,6 +175,6 @@ setInterval(() => {
   io.emit('user_list', users)
 }, Constants.SERVER.INTERVAL_RATE);
 
-server.listen(80, () => {
-  console.log('listening on *:80');
+server.listen(Constants.SERVER.PORT, () => {
+  console.log(`Server listening on port ${Constants.SERVER.PORT}`);
 });

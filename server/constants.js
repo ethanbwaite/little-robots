@@ -1,5 +1,6 @@
 export const Constants = {
   SERVER: {
+    PORT: 8080,
     INTERVAL_RATE: 1000 / 60,
   },
   PLAYER: {
