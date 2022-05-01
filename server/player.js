@@ -11,25 +11,43 @@ function Player(id, socket, x, y) {
   this.moveLeft = false;
   this.moveRight = false;
   this.connected = false;
-
+  // randomly choose left or right starting direction
+  this.direction = Math.random() > 0.5 ? 0 : 1;
+  this.animationState = this.direction === 0 ? Constants.PLAYER.ANIMATION.SLEEP.LEFT : Constants.PLAYER.ANIMATION.SLEEP.RIGHT;
+  this.animationFrame = 0;
+  
 
   this.keyDown = function(key) {
     switch (key) {
       case 'ArrowUp':
       case 'up':
         this.moveUp = true;
+        if (this.direction === 1) {
+          this.setAnimationState(Constants.PLAYER.ANIMATION.WALK.RIGHT);
+        } else {
+          this.setAnimationState(Constants.PLAYER.ANIMATION.WALK.LEFT);
+        }
         break;
       case 'ArrowLeft':
       case 'left':
         this.moveLeft = true;
+        this.direction = 0;
+        this.setAnimationState(Constants.PLAYER.ANIMATION.WALK.LEFT);
         break;
       case 'ArrowDown':
       case 'down':
         this.moveDown = true;
+        if (this.direction === 1) {
+          this.setAnimationState(Constants.PLAYER.ANIMATION.WALK.RIGHT);
+        } else {
+          this.setAnimationState(Constants.PLAYER.ANIMATION.WALK.LEFT);
+        }
         break;
       case 'ArrowRight':
       case 'right':
         this.moveRight = true;
+        this.direction = 1;
+        this.setAnimationState(Constants.PLAYER.ANIMATION.WALK.RIGHT);
         break;
     }
   }
@@ -52,6 +70,36 @@ function Player(id, socket, x, y) {
       case 'right':
         this.moveRight = false;
         break;
+    }
+
+    // Set idle animation
+    if (!this.moveUp && !this.moveDown && !this.moveLeft && !this.moveRight) {
+      switch (key) {
+        case 'ArrowUp':
+        case 'up':
+          if (this.direction === 1) {
+            this.setAnimationState(Constants.PLAYER.ANIMATION.IDLE.RIGHT);
+          } else {
+            this.setAnimationState(Constants.PLAYER.ANIMATION.IDLE.LEFT);
+          }
+          break;
+        case 'ArrowLeft':
+        case 'left':
+          this.setAnimationState(Constants.PLAYER.ANIMATION.IDLE.LEFT);
+          break;
+        case 'ArrowDown':
+        case 'down':
+          if (this.direction === 1) {  
+            this.setAnimationState(Constants.PLAYER.ANIMATION.IDLE.RIGHT);
+          } else {
+            this.setAnimationState(Constants.PLAYER.ANIMATION.IDLE.LEFT);
+          }
+          break;
+        case 'ArrowRight':
+        case 'right':
+          this.setAnimationState(Constants.PLAYER.ANIMATION.IDLE.RIGHT);
+          break;
+      }
     }
   }
 
@@ -95,7 +143,42 @@ function Player(id, socket, x, y) {
       this.connected = true;
     } else {
       this.connected = false;
+
     }
+  }
+
+  this.animate = function() {
+    switch (this.animationState) {
+      case Constants.PLAYER.ANIMATION.IDLE.LEFT:
+      case Constants.PLAYER.ANIMATION.IDLE.RIGHT:
+        if (this.animationFrame < Constants.PLAYER.ANIMATION.IDLE.FRAMES - 1) {
+          this.animationFrame++;
+        } else {
+          this.animationFrame = 0;
+        }
+        break;
+      case Constants.PLAYER.ANIMATION.WALK.LEFT:
+      case Constants.PLAYER.ANIMATION.WALK.RIGHT:
+        if (this.animationFrame < Constants.PLAYER.ANIMATION.WALK.FRAMES - 1) {
+          this.animationFrame++;
+        } else {
+          this.animationFrame = 0;
+        }
+        break;
+      case Constants.PLAYER.ANIMATION.SLEEP.LEFT:
+      case Constants.PLAYER.ANIMATION.SLEEP.RIGHT:
+        if (this.animationFrame < Constants.PLAYER.ANIMATION.SLEEP.FRAMES - 1) {
+          this.animationFrame++;
+        } else {
+          this.animationFrame = 0;
+        }
+        break;
+    }
+  }
+
+  this.setAnimationState = function(animationState) {
+    this.animationState = animationState;
+    this.animationFrame = 0;
   }
 }
 

@@ -38,6 +38,9 @@ io.on('connection', (socket) => {
       // Perform mobile controls setup
       console.log('Mobile device connected');
       socket.emit('show_mobile_controls');
+
+      // Change animation state to idle
+      
     } else {
       // DESKTOP
       // Perform desktop player setup
@@ -135,6 +138,7 @@ io.on('connection', (socket) => {
         controllers[socket.id] = controller;
         delete userIdToControllerSocket[previousCode]
         userIdToControllerSocket[code] = socket.id;
+        users[userIdToPlayerSocket[code]].setAnimationState(Constants.PLAYER.ANIMATION.IDLE.LEFT);
         console.log('Controller added for code ' + code);
         socket.emit('code_accepted');
       }
@@ -161,19 +165,27 @@ io.on('connection', (socket) => {
         var controller = controllers[socket.id];
         delete controllers[socket.id];
         delete userIdToControllerSocket[controller.playerId];
-       
+        users[userIdToPlayerSocket[controller.playerId]].setAnimationState(Constants.PLAYER.ANIMATION.SLEEP.RIGHT);
         console.log('Controller disconnected for code ' + controller.playerId);
       }
     }
   });
 });
 
+// Position update loop
 setInterval(() => {
   Object.values(users).forEach((user) => {
     user.update(userIdToControllerSocket);
   });
   io.emit('user_list', users)
 }, Constants.SERVER.INTERVAL_RATE);
+
+// Animation update loop
+setInterval(() => {
+  Object.values(users).forEach((user) => {
+    user.animate();
+  });
+}, Constants.SERVER.ANIMATION_INTERVAL_RATE);
 
 server.listen(Constants.SERVER.PORT, () => {
   console.log(`Server listening on port ${Constants.SERVER.PORT}`);

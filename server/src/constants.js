@@ -1,12 +1,5 @@
-export const Constants = {
-  SERVER: {
-    PORT: 8080,
-    INTERVAL_RATE: 1000 / 60,
-    ANIMATION_INTERVAL_RATE: 1000 / 10,
-  },
+module.exports = {
   PLAYER: {
-    MAX_SPEED: 5,
-    DIAGONAL_MULTIPLIER: 0.70711,
     ANIMATION: {
       IDLE: {
         LEFT: 0,
@@ -25,11 +18,4 @@ export const Constants = {
       }
     }
   },
-  CONTROLLER: {
-  },
-  CANVAS: {
-    WIDTH: 1000,
-    HEIGHT: 1000,
-  }
-      
-};
+}

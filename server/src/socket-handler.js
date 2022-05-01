@@ -1,19 +1,5 @@
-var drawCanvas = require('./canvas.js');
-
-module.exports = function socket() {
-  var socket = io();
+module.exports = function socket(socket) {
   var code = '';
-  var socketId = '';
-
-  socket.on('device_check_handshake_start', function(id) {
-    // Check if the device is mobile or desktop
-    socketId = id;
-    console.log(socketId);
-    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    socket.emit('device_check_handshake_end', {
-        device: isMobile ? 'mobile' : 'desktop'
-    });
-  });
 
   socket.on('show_mobile_controls', function() {
     // Hide the canvas and show the mobile controls
@@ -84,7 +70,6 @@ module.exports = function socket() {
     console.log('Code accepted');
     document.getElementById('connectionMessage').innerHTML = 'Connected!';
     document.getElementById('connectionMessage').style.color = 'green';
-    Navigator.vibrate(100);
   });
 
   socket.on('controller_lost_connection', function() {
@@ -92,9 +77,5 @@ module.exports = function socket() {
     console.log('Controller lost connection');
     document.getElementById('connectionMessage').innerHTML = 'Controller lost connection';
     document.getElementById('connectionMessage').style.color = 'red';
-  });
-
-  socket.on('user_list', function(userList) {
-    drawCanvas(userList, socketId);
   });
 }
