@@ -40,6 +40,11 @@ function drawCanvas() {
     ctx.imageSmoothingEnabled = false;
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Draw the background color
+    
+    // ctx.fillStyle = '#FEF5EF';
+    // ctx.fillRect(0, 0, canvas.width, canvas.height);
+
     if (socketId.length > 0) {
       var userList = Object.values(userMap);
       userList.sort(function(a, b) {
@@ -96,7 +101,7 @@ function drawCanvas() {
             const rectWidth = 56;
             const rectHeight = 35;
             ctx.roundRect(user.x - (rectWidth / 2), user.y - 82, rectWidth, rectHeight, 9);
-            ctx.fillStyle = 'lightgrey';
+            ctx.fillStyle = '#faedcd';
             ctx.fill();
 
             // Draw a downward pointing triangle at the bottom of the rectangle
@@ -106,10 +111,10 @@ function drawCanvas() {
             ctx.lineTo(user.x + 5, user.y - 82 + rectHeight);
             ctx.fill()
             
-            ctx.fillStyle = 'black';
+            ctx.fillStyle = '#7f5539';
             ctx.font = 'bold 14px Arial';
             ctx.fillText(user.id, user.x, user.y - 55);
-            ctx.fillStyle = 'black';
+            ctx.fillStyle = '#7f5539';
             ctx.font = 'bold 10px Arial';
             ctx.fillText('You', user.x, user.y - 70);
           } else {
@@ -206,7 +211,8 @@ module.exports = function socket(socket) {
   socket.on('show_mobile_controls', function() {
     // Hide the canvas and show the mobile controls
     console.log('Displaying mobile controls');
-    document.getElementById('canvas').style.display = 'none';
+    document.getElementById('background').style.backgroundColor = '#FEF5EF';
+    document.getElementById('client').style.display = 'none';
     document.getElementById('controller').style.display = 'flex';
     document.getElementById('submit').addEventListener('click', function(e) {
       e.preventDefault();
@@ -234,7 +240,7 @@ module.exports = function socket(socket) {
   socket.on('show_canvas', function() {
     // Hide the mobile controls and show the canvas
     console.log('Displaying canvas');
-    document.getElementById('canvas').style.display = 'flex';
+    document.getElementById('client').style.display = 'flex';
     document.getElementById('controller').style.display = 'none';
 
     document.addEventListener('keydown', function(e) {

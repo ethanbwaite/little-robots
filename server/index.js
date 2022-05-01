@@ -44,10 +44,10 @@ io.on('connection', (socket) => {
     } else {
       // DESKTOP
       // Perform desktop player setup
-      // Generate a random 4-digit userId
-      var userId = Math.floor(Math.random() * 10000);
+      // Generate a random 4-digit userId not less than 4 digits
+      var userId = Math.floor(Math.random() * 9000) + 1000;
       while (userIdToPlayerSocket[userId]) {
-        userId = Math.floor(Math.random() * 10000);
+        userId = Math.floor(Math.random() * 9000) + 1000;
       }
 
       // Instantiate a user at a random position

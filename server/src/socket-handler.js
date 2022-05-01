@@ -4,7 +4,8 @@ module.exports = function socket(socket) {
   socket.on('show_mobile_controls', function() {
     // Hide the canvas and show the mobile controls
     console.log('Displaying mobile controls');
-    document.getElementById('canvas').style.display = 'none';
+    document.getElementById('background').style.backgroundColor = '#FEF5EF';
+    document.getElementById('client').style.display = 'none';
     document.getElementById('controller').style.display = 'flex';
     document.getElementById('submit').addEventListener('click', function(e) {
       e.preventDefault();
@@ -32,7 +33,7 @@ module.exports = function socket(socket) {
   socket.on('show_canvas', function() {
     // Hide the mobile controls and show the canvas
     console.log('Displaying canvas');
-    document.getElementById('canvas').style.display = 'flex';
+    document.getElementById('client').style.display = 'flex';
     document.getElementById('controller').style.display = 'none';
 
     document.addEventListener('keydown', function(e) {

@@ -7,16 +7,22 @@
     <title>Little Robots</title>
   </head>
   <script src="/socket.io/socket.io.js"></script>
-  <body>
+  <body id="background">
     <div id="everythingWrapper">
-      <canvas id="canvas" width="1000" height="1000"></canvas>
+      <div id="client">
+        <div id="header">
+          <h1 id="title">Little Kitties</h1>
+          <p id=instructions>Open this website on your phone to control</p>
+        </div>
+        <canvas id="canvas" width="1000" height="1000"></canvas>
+      </div>  
       <div id="controller">
         <form id="connectionForm">
           <div id="textSubmitWrapper">
             <input type="text" id="code" placeholder="Code" maxlength="4">
             <input type="submit" id="submit" value="Go">
           </div>
-          <p id="connectionMessage" class="noselect">Enter a code to connect</p>
+          <p id="connectionMessage" class="noselect">Connect to a code</p>
         </form>
         <div id="controls">
           <button id="upButton" class="controlButton noselect" class="up">↑</button>

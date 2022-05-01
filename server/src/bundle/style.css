@@ -1,9 +1,45 @@
-#everythingWrapper {
-  height: 90vh;
+body {
+  background-color: #ccd5ae;
+}
+
+#client {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
+}
+
+#header {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 4px;
+  /* background-color: green; */
+}
+
+#title {
+  font-family: monospace;
+  text-align: center;
+  color: #7f5539;
+  /* background-color: blue; */
+  margin: 0px
+}
+
+#instructions {
+  font-family: monospace;
+  text-align: center;
+  color: #7f5539;
+  /* background-color: red; */
+}
+
+#everythingWrapper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  background-color: 'trasparent';
 }
 
 #controller {
@@ -42,16 +78,16 @@
   text-decoration: none;
   outline: none;
   color: #fff;
-  background-color: #4c4eaf;
+  background-color: #7f5539;
   border: none;
   border-radius: 15px;
   box-shadow: 0 9px #999;
 }
 
-.controlButton:hover {background-color: #5759ca}
+.controlButton:hover {background-color: #ad734c}
 
 .controlButton:active {
-  background-color: #323374;
+  background-color: #533825;
   box-shadow: 0 5px #666;
   transform: translateY(4px);
 }
@@ -66,8 +102,11 @@
 #connectionMessage {
   font-size: 1rem;
   font-weight: bold;
-  color: #111;
+  color: #2d343a;
   font-family: sans-serif;
+  margin-left: 3rem;
+  margin-right: 3rem;
+  text-align: center;
 }
 
 #textSubmitWrapper {
@@ -83,8 +122,9 @@ input[type=text], select {
   padding: 12px 20px;
   margin: 8px 0;
   display: inline-block;
+  /* border: none; */
   border: 1px solid #777;
-  border-radius: 7px;
+  border-radius: 12px;
   box-sizing: border-box;
   font-size: 2rem;
   font-weight: bold;
@@ -102,7 +142,7 @@ input[type=text], select {
   text-decoration: none;
   outline: none;
   color: #fff;
-  background-color: #777;
+  background-color: #7f5539;
   border: none;
   border-radius: 90px;
   margin-left: 1rem;
@@ -110,12 +150,16 @@ input[type=text], select {
 }
 
 #submit:active {
-  background-color: #333;
+  background-color: #472f1f;
 }
 
 canvas {
-  display: none;
-  border: 1px solid #000;
+  /* display: none; */
+  /* Add an inset box shadow to the canvas */
+  border-radius: 50px;
+  background: #fefae0;
+  box-shadow: inset 9px 9px 35px #dad7c1,
+              inset -9px -9px 35px #ffffff;
 }
 
 .noselect {
