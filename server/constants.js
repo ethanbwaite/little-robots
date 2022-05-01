@@ -1,11 +1,11 @@
 export const Constants = {
   SERVER: {
     PORT: 8080,
-    INTERVAL_RATE: 1000 / 60,
+    INTERVAL_RATE: 1000 / 30,
     ANIMATION_INTERVAL_RATE: 1000 / 10,
   },
   PLAYER: {
-    MAX_SPEED: 5,
+    MAX_SPEED: 10,
     DIAGONAL_MULTIPLIER: 0.70711,
     ANIMATION: {
       IDLE: {
