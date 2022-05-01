@@ -54,8 +54,8 @@ io.on('connection', (socket) => {
       var player = new Player(
         userId, 
         socket.id,
-        Math.random() * 1000, 
-        Math.random() * 1000
+        Math.random() * Constants.CANVAS.WIDTH * 0.7 + Constants.CANVAS.WIDTH * 0.15,
+        Math.random() * Constants.CANVAS.HEIGHT * 0.7 + Constants.CANVAS.HEIGHT * 0.15,
       );
       users[socket.id] = player;
       userIdToPlayerSocket[userId] = socket.id;

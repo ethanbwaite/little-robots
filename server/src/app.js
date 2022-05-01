@@ -41,6 +41,9 @@ function drawCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (socketId.length > 0) {
       var userList = Object.values(userMap);
+      userList.sort(function(a, b) {
+        return a.y - b.y;
+      });
       for (var i = 0; i < userList.length; i++) {
         var user = userList[i];
 
@@ -76,24 +79,53 @@ function drawCanvas() {
 
         ctx.font = '10px Arial';
         ctx.fillStyle = 'black';
-      if (user.connected) {
-        ctx.fillText('Connected', user.x, user.y + 35);
-      } else {
-        ctx.fillText('Not connected', user.x, user.y + 35);
-      }
-      if (user.socket === socketId) {
-        ctx.fillText(user.id, user.x, user.y + 25);
-        ctx.fillStyle = 'red';
-        ctx.fillText('You', user.x, user.y + 45);
+        ctx.textAlign = 'center';
+
+        if (user.connected) {
+          ctx.fillStyle='green';
+          ctx.fillText('Connected', user.x, user.y + 10);
+        } else {
+          ctx.fillStyle = 'red';
+          ctx.fillText('Not connected', user.x, user.y + 10);
+        }
+        if (user.socket === socketId) {
+          ctx.beginPath();
+          if (!user.connected) {
+            // Draw a rounded centered rectangle
+            const rectWidth = 56;
+            const rectHeight = 35;
+            ctx.roundRect(user.x - (rectWidth / 2), user.y - 82, rectWidth, rectHeight, 9);
+            ctx.fillStyle = 'lightgrey';
+            ctx.fill();
+
+            // Draw a downward pointing triangle at the bottom of the rectangle
+            ctx.beginPath();
+            ctx.moveTo(user.x - 5, user.y - 82 + rectHeight);
+            ctx.lineTo(user.x, user.y - 82 + 5 + rectHeight);
+            ctx.lineTo(user.x + 5, user.y - 82 + rectHeight);
+            ctx.fill()
+            
+            ctx.fillStyle = 'black';
+            ctx.font = 'bold 14px Arial';
+            ctx.fillText(user.id, user.x, user.y - 55);
+            ctx.fillStyle = 'black';
+            ctx.font = 'bold 10px Arial';
+            ctx.fillText('You', user.x, user.y - 70);
+          } else {
+            ctx.fillStyle = 'black';
+            ctx.font = 'bold 14px Arial';
+            ctx.fillText('You', user.x, user.y - 55);
+          }
+
+
+        }
       }
     }
-  }
 
-  // request new frame
-  window.requestAnimationFrame(function() {
-    drawCanvas(userMap, socketId);
-  });
-
+    // request new frame
+    window.requestAnimationFrame(function() {
+      drawCanvas(userMap, socketId);
+    });
   } else {
     console.log('Canvas not supported :(');
     // canvas-unsupported code here
