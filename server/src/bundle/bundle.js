@@ -47,6 +47,7 @@ function drawCanvas() {
       userList.sort(function(a, b) {
         return a.y - b.y;
       });
+      // Draw footsteps underneath everything else
       for (var i = 0; i < userList.length; i++) {
         var user = userList[i];
         // Draw footsteps
@@ -57,6 +58,10 @@ function drawCanvas() {
           ctx.ellipse(footstep[0], footstep[1], 4, 2, 0, 2 * Math.PI, 0);
           ctx.fill()
         }
+      }
+
+      for (var i = 0; i < userList.length; i++) {
+        var user = userList[i];
 
         const IMAGE_SIZE_MULTIPLIER = 4;
         var image = image = preloadedImages.sleepRight[user.animationFrame];
