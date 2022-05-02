@@ -146,7 +146,7 @@ function drawCanvas() {
           // Draw a rounded centered rectangle
           const rectWidth = 56;
           const rectHeight = 35;
-          ctx.roundRect(user.x - (rectWidth / 2), user.y - 87, rectWidth, rectHeight, 9);
+          drawRoundRect(user.x - (rectWidth / 2), user.y - 87, rectWidth, rectHeight, 9, ctx);
           ctx.fillStyle = '#faedcd';
           ctx.fill();
 
@@ -182,5 +182,17 @@ function drawCanvas() {
     console.log('Canvas not supported :(');
     // canvas-unsupported code here
   }
+}
+
+function drawRoundRect(x, y, w, h, r, ctx) {
+  if (w < 2 * r) r = w / 2;
+  if (h < 2 * r) r = h / 2;
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.arcTo(x+w, y,   x+w, y+h, r);
+  ctx.arcTo(x+w, y+h, x,   y+h, r);
+  ctx.arcTo(x,   y+h, x,   y,   r);
+  ctx.arcTo(x,   y,   x+w, y,   r);
+  ctx.closePath();
 }
 
