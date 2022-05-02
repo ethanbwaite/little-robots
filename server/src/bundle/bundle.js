@@ -408,5 +408,11 @@ module.exports = function socket(socket) {
     document.getElementById('kittyCount').innerHTML = `Total kitties visited: ${stats.kittyCount}`;
     document.getElementById('maxKitty').innerHTML = `Highest kitty count: ${stats.maxKittyCount}`;
   });
+
+  socket.on('code', function(code) {
+    // Update code
+    console.log('Updating code');
+    document.getElementById('codeHeading').innerHTML = `${code}`;
+  });
 }
 },{}]},{},[1]);

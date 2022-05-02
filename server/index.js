@@ -77,6 +77,7 @@ io.on('connection', (socket) => {
       }
       socket.emit('stats', stats);
       socket.broadcast.emit('stats', stats);
+      socket.emit('code', userId);
 
       console.log('Desktop user connected: ' + player.id);
     }
