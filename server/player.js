@@ -15,7 +15,8 @@ function Player(id, socket, x, y) {
   this.direction = Math.random() > 0.5 ? 0 : 1;
   this.animationState = this.direction === 0 ? Constants.PLAYER.ANIMATION.SLEEP.LEFT : Constants.PLAYER.ANIMATION.SLEEP.RIGHT;
   this.animationFrame = 0;
-  
+  this.footsteps = [];
+
 
   this.keyDown = function(key) {
     switch (key) {
@@ -48,6 +49,18 @@ function Player(id, socket, x, y) {
         this.moveRight = true;
         this.direction = 1;
         this.setAnimationState(Constants.PLAYER.ANIMATION.WALK.RIGHT);
+        break;
+      case 'jump':
+        const randomValue = Math.random()
+        var animation = null;
+        if (randomValue < 0.33) {
+          animation = this.direction === 0 ? Constants.PLAYER.ANIMATION.JUMP.LEFT : Constants.PLAYER.ANIMATION.JUMP.RIGHT;
+        } else if (randomValue < 0.66) {
+          animation = this.direction === 0 ? Constants.PLAYER.ANIMATION.LICK.LEFT : Constants.PLAYER.ANIMATION.LICK.RIGHT;
+        } else {
+          animation = this.direction === 0 ? Constants.PLAYER.ANIMATION.POKE.LEFT : Constants.PLAYER.ANIMATION.POKE.RIGHT;
+        }
+        this.setAnimationState(animation);
         break;
     }
   }
@@ -98,6 +111,8 @@ function Player(id, socket, x, y) {
         case 'ArrowRight':
         case 'right':
           this.setAnimationState(Constants.PLAYER.ANIMATION.IDLE.RIGHT);
+          break;
+        default:
           break;
       }
     }
@@ -173,12 +188,76 @@ function Player(id, socket, x, y) {
           this.animationFrame = 0;
         }
         break;
+      case Constants.PLAYER.ANIMATION.JUMP.LEFT:
+        if (this.animationFrame < Constants.PLAYER.ANIMATION.JUMP.FRAMES - 1) {
+          this.animationFrame++;
+        } else {
+          this.animationState = Constants.PLAYER.ANIMATION.IDLE.LEFT;
+          this.animationFrame = 0;
+        }
+        break;
+      case Constants.PLAYER.ANIMATION.JUMP.RIGHT:
+        if (this.animationFrame < Constants.PLAYER.ANIMATION.JUMP.FRAMES - 1) {
+          this.animationFrame++;
+        } else {
+          this.animationState = Constants.PLAYER.ANIMATION.IDLE.RIGHT;
+          this.animationFrame = 0;
+        }
+        break;
+      case Constants.PLAYER.ANIMATION.LICK.LEFT:
+        if (this.animationFrame < Constants.PLAYER.ANIMATION.LICK.FRAMES - 1) {
+          this.animationFrame++;
+        } else {
+          this.animationState = Constants.PLAYER.ANIMATION.IDLE.LEFT;
+          this.animationFrame = 0;
+        }
+        break;
+      case Constants.PLAYER.ANIMATION.LICK.RIGHT:
+        if (this.animationFrame < Constants.PLAYER.ANIMATION.LICK.FRAMES - 1) {
+          this.animationFrame++;
+        } else {
+          this.animationState = Constants.PLAYER.ANIMATION.IDLE.RIGHT;
+          this.animationFrame = 0;
+        }
+        break;
+      case Constants.PLAYER.ANIMATION.POKE.LEFT:
+        if (this.animationFrame < Constants.PLAYER.ANIMATION.POKE.FRAMES - 1) {
+          this.animationFrame++;
+        } else {
+          this.animationState = Constants.PLAYER.ANIMATION.IDLE.LEFT;
+          this.animationFrame = 0;
+        }
+        break;
+      case Constants.PLAYER.ANIMATION.POKE.RIGHT:
+        if (this.animationFrame < Constants.PLAYER.ANIMATION.POKE.FRAMES - 1) {
+          this.animationFrame++;
+        } else {
+          this.animationState = Constants.PLAYER.ANIMATION.IDLE.RIGHT;
+          this.animationFrame = 0;
+        }
+        break;
     }
   }
 
   this.setAnimationState = function(animationState) {
     this.animationState = animationState;
     this.animationFrame = 0;
+  }
+
+  this.addFootstep = function() {
+    // console.log(this.footsteps.length + ' footsteps');
+    if (this.connected) {
+      if (this.moveDown || this.moveUp || this.moveLeft || this.moveRight) {
+        for (var i = 0; i < 2; i++) {
+          const randX = Math.floor(Math.random() * (Constants.PLAYER.FOOTSTEP_RADIUS * 2)) - Constants.PLAYER.FOOTSTEP_RADIUS;
+          const randY = Math.floor(Math.random() * (Constants.PLAYER.FOOTSTEP_RADIUS * 2)) - Constants.PLAYER.FOOTSTEP_RADIUS;
+          this.footsteps.push([this.x + randX*2, this.y + randY]);
+        }
+        if (this.footsteps.length > Constants.PLAYER.MAX_FOOTSTEPS) {
+          this.footsteps = this.footsteps.slice(2);
+        }
+      }
+    }
   }
 }
 

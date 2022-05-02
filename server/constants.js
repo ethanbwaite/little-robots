@@ -3,10 +3,13 @@ export const Constants = {
     PORT: 8080,
     INTERVAL_RATE: 1000 / 30,
     ANIMATION_INTERVAL_RATE: 1000 / 10,
+    FOOTSTEP_INTERVAL_RATE: 1000 / 5,
   },
   PLAYER: {
     MAX_SPEED: 10,
     DIAGONAL_MULTIPLIER: 0.70711,
+    MAX_FOOTSTEPS: 25,
+    FOOTSTEP_RADIUS: 8,
     ANIMATION: {
       IDLE: {
         LEFT: 0,
@@ -22,6 +25,21 @@ export const Constants = {
         LEFT: 4,
         RIGHT: 5,
         FRAMES: 4
+      },
+      JUMP: {
+        LEFT: 6,
+        RIGHT: 7,
+        FRAMES: 7 
+      },
+      LICK: {
+        LEFT: 8,
+        RIGHT: 9,
+        FRAMES: 4
+      },
+      POKE: {
+        LEFT: 10,
+        RIGHT: 11,
+        FRAMES: 6
       }
     }
   },

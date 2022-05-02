@@ -130,15 +130,20 @@ io.on('connection', (socket) => {
         console.log('Code ' + code + ' is already being controlled by another client');
       } else {
         // Code is valid and not being used, add the controller
+        if (userIdToPlayerSocket[previousCode]) {
+          users[userIdToPlayerSocket[previousCode]].setAnimationState(Constants.PLAYER.ANIMATION.SLEEP.RIGHT);
+        }
+        delete userIdToControllerSocket[previousCode]
+
         var controller = new Controller(
           code, 
           socket.id, 
           userIdToPlayerSocket[code]
         );
         controllers[socket.id] = controller;
-        delete userIdToControllerSocket[previousCode]
         userIdToControllerSocket[code] = socket.id;
         users[userIdToPlayerSocket[code]].setAnimationState(Constants.PLAYER.ANIMATION.IDLE.LEFT);
+
         console.log('Controller added for code ' + code);
         socket.emit('code_accepted');
       }
@@ -186,6 +191,13 @@ setInterval(() => {
     user.animate();
   });
 }, Constants.SERVER.ANIMATION_INTERVAL_RATE);
+
+// Footstep loop
+setInterval(() => {
+  Object.values(users).forEach((user) => {
+    user.addFootstep();
+  });
+}, Constants.SERVER.FOOTSTEP_INTERVAL_RATE);
 
 server.listen(Constants.SERVER.PORT, () => {
   console.log(`Server listening on port ${Constants.SERVER.PORT}`);

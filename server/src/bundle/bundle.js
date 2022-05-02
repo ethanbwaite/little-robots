@@ -40,10 +40,7 @@ function drawCanvas() {
     ctx.imageSmoothingEnabled = false;
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // Draw the background color
     
-    // ctx.fillStyle = '#FEF5EF';
-    // ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     if (socketId.length > 0) {
       var userList = Object.values(userMap);
@@ -52,6 +49,14 @@ function drawCanvas() {
       });
       for (var i = 0; i < userList.length; i++) {
         var user = userList[i];
+        // Draw footsteps
+        for (var j = 0; j < user.footsteps.length; j++) {
+          var footstep = user.footsteps[j];
+          ctx.beginPath();
+          ctx.fillStyle = '#faedcd';
+          ctx.ellipse(footstep[0], footstep[1], 4, 2, 0, 2 * Math.PI, 0);
+          ctx.fill()
+        }
 
         const IMAGE_SIZE_MULTIPLIER = 4;
         var image = image = preloadedImages.sleepRight[user.animationFrame];
@@ -74,14 +79,30 @@ function drawCanvas() {
           case constants.PLAYER.ANIMATION.SLEEP.RIGHT:
             image = preloadedImages.sleepRight[user.animationFrame];
             break;
+          case constants.PLAYER.ANIMATION.JUMP.LEFT:
+            image = preloadedImages.jumpLeft[user.animationFrame];
+            break;
+          case constants.PLAYER.ANIMATION.JUMP.RIGHT:
+            image = preloadedImages.jumpRight[user.animationFrame];
+            break;
+          case constants.PLAYER.ANIMATION.LICK.LEFT:
+            image = preloadedImages.lickLeft[user.animationFrame];
+            break;
+          case constants.PLAYER.ANIMATION.LICK.RIGHT:
+            image = preloadedImages.lickRight[user.animationFrame];
+            break;
+          case constants.PLAYER.ANIMATION.POKE.LEFT:
+            image = preloadedImages.pokeLeft[user.animationFrame];
+            break;
+          case constants.PLAYER.ANIMATION.POKE.RIGHT:
+            image = preloadedImages.pokeRight[user.animationFrame];
+            break;
         }
 
         const drawPosX = user.x - (image.width / 2 * IMAGE_SIZE_MULTIPLIER);
         const drawPosY = user.y - (image.height * IMAGE_SIZE_MULTIPLIER);
         const width = image.width * IMAGE_SIZE_MULTIPLIER;
         const height = image.height * IMAGE_SIZE_MULTIPLIER;
-
-        ctx.drawImage(image, drawPosX, drawPosY, width, height);
 
         ctx.font = '10px Arial';
         ctx.fillStyle = 'black';
@@ -91,40 +112,39 @@ function drawCanvas() {
           ctx.fillStyle='green';
           ctx.fillText('Connected', user.x, user.y + 10);
         } else {
-          ctx.fillStyle = 'red';
+          ctx.fillStyle = '#7f5539';
           ctx.fillText('Not connected', user.x, user.y + 10);
         }
         if (user.socket === socketId) {
           ctx.beginPath();
-          if (!user.connected) {
-            // Draw a rounded centered rectangle
-            const rectWidth = 56;
-            const rectHeight = 35;
-            ctx.roundRect(user.x - (rectWidth / 2), user.y - 82, rectWidth, rectHeight, 9);
-            ctx.fillStyle = '#faedcd';
-            ctx.fill();
+          // Draw a rounded centered rectangle
+          const rectWidth = 56;
+          const rectHeight = 35;
+          ctx.roundRect(user.x - (rectWidth / 2), user.y - 87, rectWidth, rectHeight, 9);
+          ctx.fillStyle = '#faedcd';
+          ctx.fill();
 
-            // Draw a downward pointing triangle at the bottom of the rectangle
-            ctx.beginPath();
-            ctx.moveTo(user.x - 5, user.y - 82 + rectHeight);
-            ctx.lineTo(user.x, user.y - 82 + 5 + rectHeight);
-            ctx.lineTo(user.x + 5, user.y - 82 + rectHeight);
-            ctx.fill()
-            
+          // Draw a downward pointing triangle at the bottom of the rectangle
+          ctx.beginPath();
+          ctx.moveTo(user.x - 5, user.y - 87 + rectHeight);
+          ctx.lineTo(user.x, user.y - 82 + 5 + rectHeight);
+          ctx.lineTo(user.x + 5, user.y - 87 + rectHeight);
+          ctx.fill()
+
+          if (!user.connected) {
             ctx.fillStyle = '#7f5539';
             ctx.font = 'bold 14px Arial';
-            ctx.fillText(user.id, user.x, user.y - 55);
+            ctx.fillText(user.id, user.x, user.y - 60);
             ctx.fillStyle = '#7f5539';
             ctx.font = 'bold 10px Arial';
-            ctx.fillText('You', user.x, user.y - 70);
+            ctx.fillText('You', user.x, user.y - 75);
           } else {
-            ctx.fillStyle = 'black';
-            ctx.font = 'bold 14px Arial';
-            ctx.fillText('You', user.x, user.y - 55);
+            ctx.fillStyle = '#7f5539';
+            ctx.font = 'bold 16px Arial';
+            ctx.fillText('You', user.x, user.y - 65);
           }
-
-
         }
+        ctx.drawImage(image, drawPosX, drawPosY, width, height);
       }
     }
 
@@ -157,6 +177,21 @@ module.exports = {
         LEFT: 4,
         RIGHT: 5,
         FRAMES: 4
+      },
+      JUMP: {
+        LEFT: 6,
+        RIGHT: 7,
+        FRAMES: 7
+      },
+      LICK: {
+        LEFT: 8,
+        RIGHT: 9,
+        FRAMES: 4
+      },
+      POKE: {
+        LEFT: 10,
+        RIGHT: 11,
+        FRAMES: 6
       }
     }
   },
@@ -169,7 +204,13 @@ module.exports.preloadImages = function () {
         walkRight: [],
         walkLeft: [],
         sleepRight: [],
-        sleepLeft: []
+        sleepLeft: [],
+        jumpRight: [],
+        jumpLeft: [],
+        lickRight: [],
+        lickLeft: [],
+        pokeRight: [],
+        pokeLeft: [],
     }
 
     for (var i = 0; i < 4; i++) {
@@ -202,8 +243,39 @@ module.exports.preloadImages = function () {
         images.sleepLeft[i].src = './images/sleepLeft/' + i + '.png';
     }
 
+    for (var i = 0; i < 7; i++) {
+        images.jumpRight.push(new Image()); 
+        images.jumpRight[i].src = './images/jumpRight/' + i + '.png';
+    }
+
+    for (var i = 0; i < 7; i++) {
+        images.jumpLeft.push(new Image());
+        images.jumpLeft[i].src = './images/jumpLeft/' + i + '.png';
+    }
+
+    for (var i = 0; i < 4; i++) {
+        images.lickRight.push(new Image());
+        images.lickRight[i].src = './images/lickRight/' + i + '.png';
+    }
+
+    for (var i = 0; i < 4; i++) {
+        images.lickLeft.push(new Image());
+        images.lickLeft[i].src = './images/lickLeft/' + i + '.png';
+    }
+
+    for (var i = 0; i < 6; i++) {
+        images.pokeRight.push(new Image());
+        images.pokeRight[i].src = './images/pokeRight/' + i + '.png';
+    }
+
+    for (var i = 0; i < 6; i++) {
+        images.pokeLeft.push(new Image());
+        images.pokeLeft[i].src = './images/pokeLeft/' + i + '.png';
+    }
+
     return images
 }
+
 },{}],4:[function(require,module,exports){
 module.exports = function socket(socket) {
   var code = '';
@@ -223,7 +295,7 @@ module.exports = function socket(socket) {
     });
 
     // Add listeners for mobile controller keypresses
-    ['up', 'down', 'left', 'right'].forEach((direction) => {
+    ['up', 'down', 'left', 'right', 'jump'].forEach((direction) => {
       document.getElementById(`${direction}Button`).addEventListener('touchstart', function(e) {
         console.log(`${direction}Button touchstart`);
         socket.emit('controller_key_down', direction);
@@ -243,13 +315,13 @@ module.exports = function socket(socket) {
     document.getElementById('client').style.display = 'flex';
     document.getElementById('controller').style.display = 'none';
 
-    document.addEventListener('keydown', function(e) {
-      socket.emit('player_key_down', e.key);
-    });
+    // document.addEventListener('keydown', function(e) {
+    //   socket.emit('player_key_down', e.key);
+    // });
 
-    document.addEventListener('keyup', function(e) {
-      socket.emit('player_key_up', e.key);
-    });
+    // document.addEventListener('keyup', function(e) {
+    //   socket.emit('player_key_up', e.key);
+    // });
   });
 
   socket.on('code_already_connected', function() {

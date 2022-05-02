@@ -5,7 +5,13 @@ module.exports.preloadImages = function () {
         walkRight: [],
         walkLeft: [],
         sleepRight: [],
-        sleepLeft: []
+        sleepLeft: [],
+        jumpRight: [],
+        jumpLeft: [],
+        lickRight: [],
+        lickLeft: [],
+        pokeRight: [],
+        pokeLeft: [],
     }
 
     for (var i = 0; i < 4; i++) {
@@ -36,6 +42,36 @@ module.exports.preloadImages = function () {
     for (var i = 0; i < 4; i++) {
         images.sleepLeft.push(new Image());
         images.sleepLeft[i].src = './images/sleepLeft/' + i + '.png';
+    }
+
+    for (var i = 0; i < 7; i++) {
+        images.jumpRight.push(new Image()); 
+        images.jumpRight[i].src = './images/jumpRight/' + i + '.png';
+    }
+
+    for (var i = 0; i < 7; i++) {
+        images.jumpLeft.push(new Image());
+        images.jumpLeft[i].src = './images/jumpLeft/' + i + '.png';
+    }
+
+    for (var i = 0; i < 4; i++) {
+        images.lickRight.push(new Image());
+        images.lickRight[i].src = './images/lickRight/' + i + '.png';
+    }
+
+    for (var i = 0; i < 4; i++) {
+        images.lickLeft.push(new Image());
+        images.lickLeft[i].src = './images/lickLeft/' + i + '.png';
+    }
+
+    for (var i = 0; i < 6; i++) {
+        images.pokeRight.push(new Image());
+        images.pokeRight[i].src = './images/pokeRight/' + i + '.png';
+    }
+
+    for (var i = 0; i < 6; i++) {
+        images.pokeLeft.push(new Image());
+        images.pokeLeft[i].src = './images/pokeLeft/' + i + '.png';
     }
 
     return images

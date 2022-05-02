@@ -62,12 +62,11 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
 }
 
 .controlButton {
-  margin-left: 3rem;
-  margin-right: 3rem;
+  margin: 0.33rem;
   width: 6rem;
   height: 6rem;
   padding: 15px 25px;

@@ -15,6 +15,21 @@ module.exports = {
         LEFT: 4,
         RIGHT: 5,
         FRAMES: 4
+      },
+      JUMP: {
+        LEFT: 6,
+        RIGHT: 7,
+        FRAMES: 7
+      },
+      LICK: {
+        LEFT: 8,
+        RIGHT: 9,
+        FRAMES: 4
+      },
+      POKE: {
+        LEFT: 10,
+        RIGHT: 11,
+        FRAMES: 6
       }
     }
   },
