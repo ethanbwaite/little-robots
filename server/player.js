@@ -16,6 +16,10 @@ function Player(id, socket, x, y) {
   this.animationState = this.direction === 0 ? Constants.PLAYER.ANIMATION.SLEEP.LEFT : Constants.PLAYER.ANIMATION.SLEEP.RIGHT;
   this.animationFrame = 0;
   this.footsteps = [];
+  this.mousePosition = { x: -100, y: -100 };
+  this.mouseDown = false;
+  this.mouseRadius = Constants.PLAYER.MOUSE_MAX_RADIUS;
+  this.laserPointerOn = false;  
 
 
   this.keyDown = function(key) {
@@ -158,8 +162,19 @@ function Player(id, socket, x, y) {
       this.connected = true;
     } else {
       this.connected = false;
-
     }
+
+    if (this.mouseDown) {
+      if (this.mouseRadius > Constants.PLAYER.MOUSE_MIN_RADIUS) {
+        this.mouseRadius -= this.mouseRadius * Constants.PLAYER.MOUSE_RADIUS_DECREASE_RATE;
+      } else {
+        this.laserPointerOn = true;
+      }
+    } else {
+      this.laserPointerOn = false;
+      this.mouseRadius = Constants.PLAYER.MOUSE_MAX_RADIUS;
+    }
+
   }
 
   this.animate = function() {
@@ -258,6 +273,11 @@ function Player(id, socket, x, y) {
         }
       }
     }
+  }
+
+  this.setMousePosition = function(x, y) {
+    this.mousePosition.x = x;
+    this.mousePosition.y = y;
   }
 }
 

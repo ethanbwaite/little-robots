@@ -10,6 +10,9 @@ export const Constants = {
     DIAGONAL_MULTIPLIER: 0.70711,
     MAX_FOOTSTEPS: 25,
     FOOTSTEP_RADIUS: 8,
+    MOUSE_MAX_RADIUS: 2000,
+    MOUSE_MIN_RADIUS: 3,
+    MOUSE_RADIUS_DECREASE_RATE: 0.3,
     ANIMATION: {
       IDLE: {
         LEFT: 0,
@@ -48,6 +51,5 @@ export const Constants = {
   CANVAS: {
     WIDTH: 1000,
     HEIGHT: 1000,
-  }
-      
+  }    
 };

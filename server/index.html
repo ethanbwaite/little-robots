@@ -11,14 +11,21 @@
   <body id="background">
     <div id="everythingWrapper">
       <div id="client">
-        <div id="header">
-          <h1 id="title">Little Kitties</h1>
-          <p id=instructions>Open this website on your phone to control</p>
+        <div id="headerContainer">
+          <div id="header">
+            <h1 id="title">Little Kitties</h1>
+            <p id=instructions>Open this website on your phone to control</p>
+          </div>
+          <div id="stats">
+            <h2 id="statsTitle">Stats</h2>
+            <p id="kittyCount" class="counterText alignRight">Total kitties visited: #</p>
+            <p id="maxKitty" class="counterText alignRight">Highest kitty count: #</p>
+
+          </div>
         </div>
         <canvas id="canvas" width="1000" height="1000"></canvas>
       </div>  
       <div id="controller">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
         <form id="connectionForm">
           <div id="textSubmitWrapper">

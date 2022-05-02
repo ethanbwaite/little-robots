@@ -34,20 +34,42 @@ function drawCanvas() {
 
   if (canvas.getContext) {
     var ctx = canvas.getContext('2d');
+
     ctx.webkitImageSmoothingEnabled = false;
     ctx.mozImageSmoothingEnabled = false;
     ctx.imageSmoothingEnabled = false;
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
 
     if (socketId.length > 0) {
       var userList = Object.values(userMap);
       userList.sort(function(a, b) {
         return a.y - b.y;
       });
+
+      // Draw mouse position circle underneath everthing
+      for (var i = 0; i < userList.length; i++) {
+        var user = userList[i];
+        var text = 'Click for laser pointer';
+        if ((user.mouseDown && user.socket === socketId) || user.laserPointerOn) {
+          ctx.beginPath();
+          ctx.fillStyle = user.laserPointerOn ? 'red' : '#ece9d2';
+          ctx.arc(user.mousePosition.x, user.mousePosition.y, user.mouseRadius, 0, 2 * Math.PI);
+          ctx.fill();
+          text = 'Hold';
+        }
+        if (user.socket === socketId && !user.laserPointerOn && user.mousePosition.x > 10 
+          && user.mousePosition.y > 10 && user.mousePosition.x < canvas.width - 10 
+          && user.mousePosition.y < canvas.height - 10) {
+          ctx.fillStyle = '#7f5539';
+          ctx.font = '10px Arial';
+          ctx.fillText(text, user.mousePosition.x, user.mousePosition.y - 10);
+        }
+      }
+
       // Draw footsteps underneath everything else
       for (var i = 0; i < userList.length; i++) {
+
         var user = userList[i];
         // Draw footsteps
         for (var j = 0; j < user.footsteps.length; j++) {

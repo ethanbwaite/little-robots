@@ -35,6 +35,22 @@ module.exports = function socket(socket) {
     console.log('Displaying canvas');
     document.getElementById('client').style.display = 'flex';
     document.getElementById('controller').style.display = 'none';
+    var canvas = document.getElementById('canvas');
+    canvas.addEventListener("mousemove", function(e) {
+      var cRect = canvas.getBoundingClientRect();        // Gets CSS pos, and width/height
+      var canvasX = Math.round(e.clientX - cRect.left);  // Subtract the 'left' of the canvas 
+      var canvasY = Math.round(e.clientY - cRect.top);   // from the X/Y positions to make  
+      // ctx.clearRect(0, 0, canvas.width, canvas.height);  // (0,0) the top left of the canvas
+      // ctx.fillStyle = '#ffffff';
+      // ctx.fillText("X: "+canvasX+", Y: "+canvasY, 10, 20);
+      socket.emit('mouse_move', {x: canvasX, y: canvasY});
+    });
+    canvas.addEventListener("mousedown", function(e) {
+      socket.emit('mouse_down');
+    });
+    canvas.addEventListener("mouseup", function(e) {
+      socket.emit('mouse_up');
+    });
 
     // document.addEventListener('keydown', function(e) {
     //   socket.emit('player_key_down', e.key);
@@ -78,5 +94,12 @@ module.exports = function socket(socket) {
     console.log('Controller lost connection');
     document.getElementById('connectionMessage').innerHTML = 'Controller lost connection';
     document.getElementById('connectionMessage').style.color = 'red';
+  });
+
+  socket.on('stats', function(stats) {
+    // Update stats
+    console.log('Updating stats');
+    document.getElementById('kittyCount').innerHTML = `Total kitties visited: ${stats.kittyCount}`;
+    document.getElementById('maxKitty').innerHTML = `Highest kitty count: ${stats.maxKittyCount}`;
   });
 }

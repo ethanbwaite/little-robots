@@ -35,20 +35,42 @@ function drawCanvas() {
 
   if (canvas.getContext) {
     var ctx = canvas.getContext('2d');
+
     ctx.webkitImageSmoothingEnabled = false;
     ctx.mozImageSmoothingEnabled = false;
     ctx.imageSmoothingEnabled = false;
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
 
     if (socketId.length > 0) {
       var userList = Object.values(userMap);
       userList.sort(function(a, b) {
         return a.y - b.y;
       });
+
+      // Draw mouse position circle underneath everthing
+      for (var i = 0; i < userList.length; i++) {
+        var user = userList[i];
+        var text = 'Click for laser pointer';
+        if ((user.mouseDown && user.socket === socketId) || user.laserPointerOn) {
+          ctx.beginPath();
+          ctx.fillStyle = user.laserPointerOn ? 'red' : '#ece9d2';
+          ctx.arc(user.mousePosition.x, user.mousePosition.y, user.mouseRadius, 0, 2 * Math.PI);
+          ctx.fill();
+          text = 'Hold';
+        }
+        if (user.socket === socketId && !user.laserPointerOn && user.mousePosition.x > 10 
+          && user.mousePosition.y > 10 && user.mousePosition.x < canvas.width - 10 
+          && user.mousePosition.y < canvas.height - 10) {
+          ctx.fillStyle = '#7f5539';
+          ctx.font = '10px Arial';
+          ctx.fillText(text, user.mousePosition.x, user.mousePosition.y - 10);
+        }
+      }
+
       // Draw footsteps underneath everything else
       for (var i = 0; i < userList.length; i++) {
+
         var user = userList[i];
         // Draw footsteps
         for (var j = 0; j < user.footsteps.length; j++) {
@@ -319,6 +341,22 @@ module.exports = function socket(socket) {
     console.log('Displaying canvas');
     document.getElementById('client').style.display = 'flex';
     document.getElementById('controller').style.display = 'none';
+    var canvas = document.getElementById('canvas');
+    canvas.addEventListener("mousemove", function(e) {
+      var cRect = canvas.getBoundingClientRect();        // Gets CSS pos, and width/height
+      var canvasX = Math.round(e.clientX - cRect.left);  // Subtract the 'left' of the canvas 
+      var canvasY = Math.round(e.clientY - cRect.top);   // from the X/Y positions to make  
+      // ctx.clearRect(0, 0, canvas.width, canvas.height);  // (0,0) the top left of the canvas
+      // ctx.fillStyle = '#ffffff';
+      // ctx.fillText("X: "+canvasX+", Y: "+canvasY, 10, 20);
+      socket.emit('mouse_move', {x: canvasX, y: canvasY});
+    });
+    canvas.addEventListener("mousedown", function(e) {
+      socket.emit('mouse_down');
+    });
+    canvas.addEventListener("mouseup", function(e) {
+      socket.emit('mouse_up');
+    });
 
     // document.addEventListener('keydown', function(e) {
     //   socket.emit('player_key_down', e.key);
@@ -362,6 +400,13 @@ module.exports = function socket(socket) {
     console.log('Controller lost connection');
     document.getElementById('connectionMessage').innerHTML = 'Controller lost connection';
     document.getElementById('connectionMessage').style.color = 'red';
+  });
+
+  socket.on('stats', function(stats) {
+    // Update stats
+    console.log('Updating stats');
+    document.getElementById('kittyCount').innerHTML = `Total kitties visited: ${stats.kittyCount}`;
+    document.getElementById('maxKitty').innerHTML = `Highest kitty count: ${stats.maxKittyCount}`;
   });
 }
 },{}]},{},[1]);

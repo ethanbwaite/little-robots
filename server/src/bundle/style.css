@@ -9,28 +9,82 @@ body {
   justify-content: center;
 }
 
+#headerContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
 #header {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: center;
-  margin-top: 4px;
+  align-items: left;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  padding-left: 16px;
+  padding-right: 24px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  border-radius: 16px;
+  background: #fefae0;
+  box-shadow:  5px 5px 10px #adb594,
+              -5px -5px 10px #ebf5c8;
   /* background-color: green; */
 }
 
 #title {
   font-family: monospace;
-  text-align: center;
+  font-size: 2rem;
+  text-align: left;
   color: #7f5539;
   /* background-color: blue; */
   margin: 0px
 }
 
-#instructions {
+p {
   font-family: monospace;
-  text-align: center;
+  text-align: left;
   color: #7f5539;
+  margin: 0px;
   /* background-color: red; */
+}
+
+#statsTitle {
+  font-family: monospace;
+  font-size: 1rem;
+  text-align: right;
+  color: #7f5539;
+  /* background-color: blue; */
+  margin: 0px
+}
+
+#stats {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: left;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  padding-left: 16px;
+  padding-right: 24px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  border-radius: 16px;
+  background: #fefae0;
+  box-shadow:  5px 5px 10px #adb594,
+              -5px -5px 10px #ebf5c8;
+  /* background-color: green; */
+}
+
+.alignRight {
+  text-align: right;
+}
+
+#kittyCount {
+  text-align: right;
 }
 
 #everythingWrapper {
@@ -157,8 +211,10 @@ canvas {
   /* Add an inset box shadow to the canvas */
   border-radius: 50px;
   background: #fefae0;
-  box-shadow: inset 9px 9px 35px #dad7c1,
-              inset -9px -9px 35px #ffffff;
+  /* background: #ece9d2; */
+
+  box-shadow:  5px 5px 10px #adb594,
+             -5px -5px 10px #ebf5c8;
 }
 
 .noselect {

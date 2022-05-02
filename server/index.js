@@ -25,6 +25,10 @@ var controllers = {}; // Dict of active controllers
 var users = {}; // Dict of active users (controllable players)
 var userIdToPlayerSocket = {};
 var userIdToControllerSocket = {};
+var stats = {
+  kittyCount: 0,
+  maxKittyCount: 0
+}
 
 io.on('connection', (socket) => {
 
@@ -38,9 +42,6 @@ io.on('connection', (socket) => {
       // Perform mobile controls setup
       console.log('Mobile device connected');
       socket.emit('show_mobile_controls');
-
-      // Change animation state to idle
-      
     } else {
       // DESKTOP
       // Perform desktop player setup
@@ -67,6 +68,15 @@ io.on('connection', (socket) => {
 
       // Send the user list to all clients
       socket.broadcast.emit('user_list', users);
+
+      // Update stats
+      stats.kittyCount++;
+      var usersLength = Object.values(users).length
+      if (usersLength > stats.maxKittyCount) {
+        stats.maxKittyCount = usersLength;
+      }
+      socket.emit('stats', stats);
+      socket.broadcast.emit('stats', stats);
 
       console.log('Desktop user connected: ' + player.id);
     }
@@ -151,6 +161,27 @@ io.on('connection', (socket) => {
       // Code is invalid
       console.log('Code ' + code + ' is invalid');
       socket.emit('code_invalid');
+    }
+  });
+
+  socket.on('mouse_move', (data) => {
+    var user = users[socket.id];
+    if (user) {
+      user.setMousePosition(data.x, data.y);
+    }
+  });
+
+  socket.on('mouse_down', () => {
+    var user = users[socket.id];
+    if (user) {
+      user.mouseDown = true;
+    }
+  });
+
+  socket.on('mouse_up', () => {
+    var user = users[socket.id];
+    if (user) {
+      user.mouseDown = false;
     }
   });
 
