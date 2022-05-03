@@ -220,7 +220,9 @@ io.on('connection', (socket) => {
         var controller = controllers[socket.id];
         delete controllers[socket.id];
         delete userIdToControllerSocket[controller.playerId];
-        users[userIdToPlayerSocket[controller.playerId]].setAnimationState(Constants.PLAYER.ANIMATION.SLEEP.RIGHT);
+        if (users[userIdToPlayerSocket[controller.playerId]]) {
+          users[userIdToPlayerSocket[controller.playerId]].setAnimationState(Constants.PLAYER.ANIMATION.SLEEP.RIGHT);
+        }
         console.log('Controller disconnected for code ' + controller.playerId);
       }
     }

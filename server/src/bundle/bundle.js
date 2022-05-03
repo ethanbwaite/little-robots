@@ -318,6 +318,7 @@ module.exports.preloadImages = function () {
 },{}],4:[function(require,module,exports){
 module.exports = function socket(socket) {
   var code = '';
+  var desktop = false;
 
   socket.on('show_mobile_controls', function() {
     // Hide the canvas and show the mobile controls
@@ -328,7 +329,7 @@ module.exports = function socket(socket) {
     document.getElementById('controller').style.display = 'flex';
     document.getElementById('submit').addEventListener('click', function(e) {
       e.preventDefault();
-      code = document.getElementById('code').value;
+      code = document.getElementById('codeInput').value;
       socket.emit('code_submit', [code, previousCode]);
     });
 
@@ -349,7 +350,7 @@ module.exports = function socket(socket) {
       var searchParams = new URLSearchParams(window.location.search)
       if (searchParams.has('code')) {
         code = searchParams.get('code');
-        document.getElementById('code').value = code;
+        document.getElementById('codeInput').value = code;
         socket.emit('code_submit', [code, previousCode]);
       }
     }
@@ -357,6 +358,7 @@ module.exports = function socket(socket) {
       
   socket.on('show_canvas', function() {
     // Hide the mobile controls and show the canvas
+    desktop = true;
     console.log('Displaying canvas');
     document.getElementById('client').style.display = 'flex';
     document.getElementById('controller').style.display = 'none';
@@ -464,24 +466,28 @@ module.exports = function socket(socket) {
 
   socket.on('chat_message', function(message) {
     // Update chat
-    console.log('Updating chat');
-    showMessage(message);
-    
-    // Scroll to bottom
-    var chat = document.getElementById('chat');
-    chat.scrollTop = chat.scrollHeight; 
+    if (desktop) {
+      console.log('Updating chat');
+      showMessage(message);
+      
+      // Scroll to bottom
+      var chat = document.getElementById('chat');
+      chat.scrollTop = chat.scrollHeight; 
+    }
   });
 
   socket.on('chat_cache', function(chatCache) {
     // Load list of previous chat messages
-    console.log('Loading chat cache');
-    for (var i = 0; i < chatCache.length; i++) {
-      showMessage(chatCache[i]);
+    if (desktop) {
+      console.log('Loading chat cache');
+      for (var i = 0; i < chatCache.length; i++) {
+        showMessage(chatCache[i]);
+      }
+
+      // Scroll to bottom
+      var chat = document.getElementById('chat');
+      chat.scrollTop = chat.scrollHeight; 
     }
-    
-    // Scroll to bottom
-    var chat = document.getElementById('chat');
-    chat.scrollTop = chat.scrollHeight; 
   });
 }
 

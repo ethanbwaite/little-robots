@@ -311,7 +311,7 @@ p {
   justify-content: center;
 }
 
-.mobileInput {
+#codeInput {
   width: 50%;
   padding: 12px 20px;
   margin: 8px 0;
@@ -324,7 +324,7 @@ p {
   font-weight: bold;
 }
 
-#submit {
+#submit, #code {
   /* margin-left: 2rem;
   margin-right: 2rem; */
   padding: 15px 25px;
