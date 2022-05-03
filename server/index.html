@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <title>Little Kitties</title>
     <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   </head>
   <script src="/socket.io/socket.io.js"></script>
   <body id="background">
@@ -14,9 +15,10 @@
         <div id="headerContainer">
           <div id="header">
             <h1 id="title">Little Kitties.</h1>
-            <p id='instructions'>Open this page on your phone and enter the code to control</p>
+            <p id='instructions'>Scan the code to connect to your kitty</p>
           </div>
           <div id='codeDisplay'>
+            <canvas id="qrCode"></canvas>
             <h1 id='codeHeading'>####</h1>
           </div>
           <div id="stats">
@@ -26,13 +28,25 @@
 
           </div>
         </div>
-        <canvas id="canvas" width="1000" height="1000"></canvas>
+        <div id="kittyContainer">
+          <canvas id="canvas" width="1000" height="1000"></canvas>
+          <div id="leftColumn">
+            <div id="chatHeaderContainer">
+              <h2 id="chatHeader">Chat</h2>              
+            </div>
+            <div id="chat">
+            </div>
+            <div id="chatInputContainer">
+              <input id="chatInput" type="text" placeholder="Type a message..." maxlength="100">
+              <!-- <input id="chatSubmit" type="submit" value="Send"> -->
+            </div> 
+          </div>
       </div>  
       <div id="controller">
 
         <form id="connectionForm">
           <div id="textSubmitWrapper">
-            <input type="text" id="code" placeholder="Code" maxlength="4">
+            <input type="text" id="code" class="mobileInput" placeholder="Code" maxlength="4">
             <input type="submit" id="submit" value="Go">
           </div>
           <p id="connectionMessage" class="noselect">Open this website on your desktop</p>

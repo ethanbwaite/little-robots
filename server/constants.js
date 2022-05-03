@@ -51,5 +51,8 @@ export const Constants = {
   CANVAS: {
     WIDTH: 1000,
     HEIGHT: 1000,
-  }    
+  },
+  CHAT: {
+    MESSAGE_CACHE_SIZE: 100,
+  }
 };

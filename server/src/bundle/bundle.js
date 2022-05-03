@@ -321,15 +321,14 @@ module.exports = function socket(socket) {
 
   socket.on('show_mobile_controls', function() {
     // Hide the canvas and show the mobile controls
+    var previousCode = code;
     console.log('Displaying mobile controls');
     document.getElementById('background').style.backgroundColor = '#FEF5EF';
     document.getElementById('client').style.display = 'none';
     document.getElementById('controller').style.display = 'flex';
     document.getElementById('submit').addEventListener('click', function(e) {
       e.preventDefault();
-      var previousCode = code;
       code = document.getElementById('code').value;
-
       socket.emit('code_submit', [code, previousCode]);
     });
 
@@ -346,6 +345,14 @@ module.exports = function socket(socket) {
       });
     });
     
+    if ('URLSearchParams' in window) {
+      var searchParams = new URLSearchParams(window.location.search)
+      if (searchParams.has('code')) {
+        code = searchParams.get('code');
+        document.getElementById('code').value = code;
+        socket.emit('code_submit', [code, previousCode]);
+      }
+    }
   });
       
   socket.on('show_canvas', function() {
@@ -368,6 +375,15 @@ module.exports = function socket(socket) {
     });
     canvas.addEventListener("mouseup", function(e) {
       socket.emit('mouse_up');
+    });
+    document.getElementById('chatInput').addEventListener('keydown', function(e) {
+      // Listen for Enter key
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        var message = document.getElementById('chatInput').value;
+        socket.emit('chat_message', message);
+        document.getElementById('chatInput').value = '';
+      }
     });
 
     // document.addEventListener('keydown', function(e) {
@@ -424,7 +440,61 @@ module.exports = function socket(socket) {
   socket.on('code', function(code) {
     // Update code
     console.log('Updating code');
-    document.getElementById('codeHeading').innerHTML = `${code}`;
+    document.getElementById('codeHeading').innerHTML = `${code}`; 
+    if ('URLSearchParams' in window) {
+      var searchParams = new URLSearchParams(window.location.search)
+      searchParams.set("code", `${code}`);
+      var newRelativePathQuery = window.location.pathname + '?' + searchParams.toString();
+      history.pushState(null, '', newRelativePathQuery);
+    }
+
+    var qrcode = new QRious({
+      element: document.getElementById("qrCode"),
+      background: 'black',
+      backgroundAlpha: 0,
+      foreground: '#fefae0',
+      foregroundAlpha: 1,
+      level: 'L',
+      padding: 0,
+      size: 75,
+      value: window.location.href
+    });
+    console.log(window.location.href);
   });
+
+  socket.on('chat_message', function(message) {
+    // Update chat
+    console.log('Updating chat');
+    showMessage(message);
+    
+    // Scroll to bottom
+    var chat = document.getElementById('chat');
+    chat.scrollTop = chat.scrollHeight; 
+  });
+
+  socket.on('chat_cache', function(chatCache) {
+    // Load list of previous chat messages
+    console.log('Loading chat cache');
+    for (var i = 0; i < chatCache.length; i++) {
+      showMessage(chatCache[i]);
+    }
+    
+    // Scroll to bottom
+    var chat = document.getElementById('chat');
+    chat.scrollTop = chat.scrollHeight; 
+  });
+}
+
+function showMessage(message) {
+  var chatMessage = document.createElement('p');
+  chatMessage.className = 'chatMessage';
+  chatMessage.innerHTML = `${message.message}`;
+  
+  var chatTime = document.createElement('p');
+  chatTime.className = 'chatTime';
+  chatTime.innerHTML = `${message.time}`;
+
+  document.getElementById('chat').appendChild(chatMessage);
+  document.getElementById('chat').appendChild(chatTime);
 }
 },{}]},{},[1]);

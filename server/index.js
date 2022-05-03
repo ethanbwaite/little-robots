@@ -29,6 +29,7 @@ var stats = {
   kittyCount: 0,
   maxKittyCount: 0
 }
+var messageCache = [];
 
 io.on('connection', (socket) => {
 
@@ -78,6 +79,7 @@ io.on('connection', (socket) => {
       socket.emit('stats', stats);
       socket.broadcast.emit('stats', stats);
       socket.emit('code', userId);
+      socket.emit('chat_cache', messageCache);
 
       console.log('Desktop user connected: ' + player.id);
     }
@@ -185,6 +187,22 @@ io.on('connection', (socket) => {
       user.mouseDown = false;
     }
   });
+
+  socket.on('chat_message', (message) => {
+    // Broadcast message to all users, without saving
+    var messageResponse = {
+      message: message,
+      user: socket.id,
+      time: new Date().toLocaleTimeString()
+    }
+    messageCache.push(messageResponse);
+    if (messageCache.length > Constants.CHAT.MESSAGE_CACHE_SIZE) {
+      messageCache.shift();
+    }
+    socket.emit('chat_message', messageResponse);
+    socket.broadcast.emit('chat_message', messageResponse);
+  });
+
 
   socket.on('disconnect', () => {
     // Remove the user from the user list
